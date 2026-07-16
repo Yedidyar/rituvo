@@ -16,7 +16,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/web',
-  resolve: { tsconfigPaths: true },
+  resolve: {
+    tsconfigPaths: true,
+    conditions: ['@rituvo/source'],
+  },
+  build: {
+    outDir: './dist',
+  },
   server: {
     port: 3000,
     host: 'localhost',
