@@ -18,13 +18,13 @@ pnpm dlx shadcn@latest add button -y
 
 Config file: `apps/web/components.json`
 
-| Setting | Value |
-|---------|-------|
-| Style | `base-nova` |
-| RSC | `false` |
-| Icons | `lucide` |
-| Base color | `zinc` |
-| CSS | `src/styles.css` |
+| Setting    | Value            |
+| ---------- | ---------------- |
+| Style      | `base-nova`      |
+| RSC        | `false`          |
+| Icons      | `lucide`         |
+| Base color | `zinc`           |
+| CSS        | `src/styles.css` |
 
 Import aliases (from `components.json`):
 

@@ -5,6 +5,10 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "lint": {},
+    "lint:fix": {},
+    "format": {},
+    "format:check": {},
     "test": {
       "options": {
         "command": "vitest run --passWithNoTests"

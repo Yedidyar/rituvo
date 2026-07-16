@@ -50,6 +50,38 @@
   "targetDefaults": {
     "test": {
       "dependsOn": ["^build"]
+    },
+    "lint": {
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/.oxlintrc.json"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "oxlint .",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint:fix": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "oxlint . --fix",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "oxfmt .",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "format:check": {
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/.oxfmtrc.json"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "oxfmt . --check",
+        "cwd": "{projectRoot}"
+      }
     }
   }
 }

@@ -20,9 +20,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "vite.config.ts",
-    "drizzle.config.ts",
-    "eslint.config.js",
-    "prettier.config.js"
+    "drizzle.config.ts"
   ],
   "exclude": ["out-tsc", "dist", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }
