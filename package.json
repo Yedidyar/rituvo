@@ -1,0 +1,28 @@
+{
+  "name": "@rituvo/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nx dev web",
+    "build": "nx build web",
+    "preview": "nx preview web",
+    "test": "nx test web",
+    "lint": "nx lint web",
+    "typecheck": "nx typecheck web"
+  },
+  "private": true,
+  "devDependencies": {
+    "@nx/js": "23.1.0",
+    "@nx/vite": "23.1.0",
+    "@nx/vitest": "23.1.0",
+    "@nx/web": "23.1.0",
+    "@swc/helpers": "~0.5.18",
+    "jiti": "2.4.2",
+    "nx": "23.1.0",
+    "prettier": "~3.6.2",
+    "tslib": "^2.3.0",
+    "typescript": "npm:@typescript/typescript6@~6.0.2",
+    "typescript-7": "npm:typescript@~7.0.2",
+    "vite": "^8.0.0"
+  }
+}
