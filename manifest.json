@@ -1,0 +1,23 @@
+{
+  "project": "Rituvo",
+  "generated": "2026-07-17",
+  "purpose": "Repository context for contributors and coding agents",
+  "files": [
+    "AGENTS.md",
+    "README.md",
+    "docs/README.md",
+    "docs/decisions/0001-demo-uses-deterministic-partner-responses.md",
+    "docs/decisions/README.md",
+    "docs/demo/acceptance-criteria.md",
+    "docs/demo/scope.md",
+    "docs/demo/user-flow.md",
+    "docs/engineering/architecture.md",
+    "docs/engineering/domain-model.md",
+    "docs/engineering/implementation-plan.md",
+    "docs/product/features.md",
+    "docs/product/principles.md",
+    "docs/product/terminology.md",
+    "docs/product/users.md",
+    "docs/product/vision.md"
+  ]
+}
