@@ -113,6 +113,18 @@ Prioritize:
 
 Add at least one end-to-end test for the core demo journey when the stack supports it.
 
+## Internationalization
+
+The web app supports English (`en`, LTR) and Hebrew (`he`, RTL).
+
+- User-facing copy lives in `apps/web/src/i18n/messages/`.
+- Components read strings through `useTranslation()` instead of hardcoding text.
+- The root document sets `lang` and `dir` on `<html>` for each locale.
+- Locale preference is stored in `localStorage` and applied before first paint when possible.
+- Layout styles use logical properties (`margin-inline`, `padding-inline`, `inset-inline`) so mirrored layouts work in RTL.
+
+When adding a screen or user-visible string, add keys to every supported locale file.
+
 ## Accessibility
 
 Core requirements:
