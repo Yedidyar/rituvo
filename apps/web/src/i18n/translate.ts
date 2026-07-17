@@ -12,6 +12,21 @@ export type TranslationKey = NestedKeyOf<Messages>
 
 type InterpolationValues = Record<string, string | number>
 
+export function createTranslator(messages: Messages) {
+  return function t(key: TranslationKey, values?: InterpolationValues): string {
+    const template = getNestedValue(
+      messages as unknown as Record<string, unknown>,
+      key,
+    )
+
+    if (!template) {
+      return key
+    }
+
+    return interpolate(template, values)
+  }
+}
+
 function getNestedValue(
   obj: Record<string, unknown>,
   path: string,
@@ -35,19 +50,4 @@ function interpolate(template: string, values?: InterpolationValues): string {
     const value = values[key]
     return value === undefined ? `{{${key}}}` : String(value)
   })
-}
-
-export function createTranslator(messages: Messages) {
-  return function t(key: TranslationKey, values?: InterpolationValues): string {
-    const template = getNestedValue(
-      messages as unknown as Record<string, unknown>,
-      key,
-    )
-
-    if (!template) {
-      return key
-    }
-
-    return interpolate(template, values)
-  }
 }

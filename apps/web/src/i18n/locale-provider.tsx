@@ -27,46 +27,6 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null)
 
-function detectBrowserLocale(): Locale {
-  if (typeof navigator === 'undefined') {
-    return defaultLocale
-  }
-
-  const preferred = navigator.languages?.[0] ?? navigator.language
-  if (!preferred) {
-    return defaultLocale
-  }
-
-  const normalized = preferred.toLowerCase()
-  if (normalized.startsWith('he')) {
-    return 'he'
-  }
-
-  return defaultLocale
-}
-
-function readStoredLocale(): Locale | null {
-  if (typeof window === 'undefined') {
-    return null
-  }
-
-  const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY)
-  return stored && isLocale(stored) ? stored : null
-}
-
-function resolveInitialLocale(): Locale {
-  return readStoredLocale() ?? detectBrowserLocale()
-}
-
-function applyDocumentLocale(locale: Locale) {
-  if (typeof document === 'undefined') {
-    return
-  }
-
-  document.documentElement.lang = locale
-  document.documentElement.dir = getDirection(locale)
-}
-
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
     if (typeof window === 'undefined') {
@@ -78,7 +38,11 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   const setLocale = useCallback((nextLocale: Locale) => {
     setLocaleState(nextLocale)
-    window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
+    try {
+      window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
+    } catch {
+      // Storage may be unavailable in restricted contexts.
+    }
     applyDocumentLocale(nextLocale)
   }, [])
 
@@ -112,4 +76,48 @@ export function useLocale() {
 export function useTranslation() {
   const { t, locale, direction, setLocale } = useLocale()
   return { t, locale, direction, setLocale }
+}
+
+function detectBrowserLocale(): Locale {
+  if (typeof navigator === 'undefined') {
+    return defaultLocale
+  }
+
+  const preferred = navigator.languages?.[0] ?? navigator.language
+  if (!preferred) {
+    return defaultLocale
+  }
+
+  const normalized = preferred.toLowerCase()
+  if (normalized.startsWith('he')) {
+    return 'he'
+  }
+
+  return defaultLocale
+}
+
+function readStoredLocale(): Locale | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY)
+    return stored && isLocale(stored) ? stored : null
+  } catch {
+    return null
+  }
+}
+
+function resolveInitialLocale(): Locale {
+  return readStoredLocale() ?? detectBrowserLocale()
+}
+
+function applyDocumentLocale(locale: Locale) {
+  if (typeof document === 'undefined') {
+    return
+  }
+
+  document.documentElement.lang = locale
+  document.documentElement.dir = getDirection(locale)
 }
