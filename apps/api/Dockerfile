@@ -21,4 +21,6 @@ COPY dist .
 
 RUN pnpm install
 
+USER node
+
 CMD [ "node", "main.js" ]
