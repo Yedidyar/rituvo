@@ -1,0 +1,1 @@
+export const localeBootstrapScript = `(function(){try{var k=${JSON.stringify('rituvo-locale')};var v=localStorage.getItem(k);if(v==='he'){document.documentElement.lang='he';document.documentElement.dir='rtl';}else if(v==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}})();`
