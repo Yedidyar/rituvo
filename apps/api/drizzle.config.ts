@@ -1,8 +1,10 @@
 import { defineConfig } from 'drizzle-kit'
 
-import { env } from './src/env'
+import { loadConfig } from './src/config'
 
-if (!env.DATABASE_URL) {
+const { databaseUrl } = loadConfig()
+
+if (!databaseUrl) {
   throw new Error(
     'DATABASE_URL is not configured. Add it to apps/api/.env.local.',
   )
@@ -13,6 +15,6 @@ export default defineConfig({
   schema: './src/db/schema.ts',
   dialect: 'postgresql',
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: databaseUrl,
   },
 })

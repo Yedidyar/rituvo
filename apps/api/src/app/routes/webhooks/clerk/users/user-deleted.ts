@@ -1,3 +1,4 @@
+import type { Database } from '../../../../../db'
 import { deleteUserById } from '../../../../../users/users-repository'
 
 import type { UserDeletedWebhookEvent } from './user-webhook-events'
@@ -7,11 +8,12 @@ import type { UserDeletedWebhookEvent } from './user-webhook-events'
  * is a no-op, so retries are safe.
  */
 export async function handleUserDeleted(
+  database: Database,
   event: UserDeletedWebhookEvent,
 ): Promise<void> {
   if (!event.data.id) {
     return
   }
 
-  await deleteUserById(event.data.id)
+  await deleteUserById(database, event.data.id)
 }

@@ -2,46 +2,32 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 
-import { env } from '../env'
-
 import * as schema from './schema'
 
 export type Database = NodePgDatabase<typeof schema>
 
-let pool: Pool | null = null
-let database: Database | null = null
-
 /**
- * Returns the shared Drizzle instance, opening the connection pool on first
- * use. Lazy singleton — every caller shares one pool.
- *
- * @throws When DATABASE_URL is not configured.
+ * A live database connection: the Drizzle instance to query through, and a
+ * close function that drains the underlying pool on shutdown.
  */
-export function getDatabase(): Database {
-  if (database) {
-    return database
-  }
-
-  if (!env.DATABASE_URL) {
-    throw new Error(
-      'DATABASE_URL is not configured. Add it to apps/api/.env.local.',
-    )
-  }
-
-  pool = new Pool({ connectionString: env.DATABASE_URL })
-  database = drizzle(pool, { schema })
-  return database
+export interface DatabaseConnection {
+  readonly database: Database
+  readonly close: () => Promise<void>
 }
 
 /**
- * Closes the shared connection pool. Safe to call when no pool was created.
+ * Opens a connection pool for the given URL and returns a Drizzle instance
+ * bound to it. The caller owns the lifecycle — create one per application at
+ * the composition root and call close() on shutdown.
+ *
+ * @param connectionString a PostgreSQL connection URL
  */
-export async function closeDatabase(): Promise<void> {
-  if (!pool) {
-    return
-  }
+export function createDatabase(connectionString: string): DatabaseConnection {
+  const pool = new Pool({ connectionString })
+  const database = drizzle(pool, { schema })
 
-  await pool.end()
-  pool = null
-  database = null
+  return {
+    database,
+    close: () => pool.end(),
+  }
 }

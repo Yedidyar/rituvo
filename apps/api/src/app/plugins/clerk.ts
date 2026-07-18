@@ -2,8 +2,6 @@ import type { FastifyInstance } from 'fastify'
 import fp from 'fastify-plugin'
 import { clerkPlugin } from '@clerk/fastify'
 
-import { env } from '../../env'
-
 /**
  * This plugin authenticates incoming requests with Clerk.
  * Routes read the result with getAuth(request).
@@ -13,7 +11,8 @@ import { env } from '../../env'
  * @see https://clerk.com/docs/fastify/getting-started/quickstart
  */
 export default fp(async function (fastify: FastifyInstance) {
-  if (!env.CLERK_PUBLISHABLE_KEY || !env.CLERK_SECRET_KEY) {
+  const { publishableKey, secretKey } = fastify.config.clerk
+  if (!publishableKey || !secretKey) {
     fastify.log.warn(
       'CLERK_PUBLISHABLE_KEY or CLERK_SECRET_KEY missing — Clerk authentication is disabled',
     )

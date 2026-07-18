@@ -1,20 +1,27 @@
 import { eq } from 'drizzle-orm'
 
-import { getDatabase } from '../db'
+import type { Database } from '../db'
 import { users } from '../db/schema'
 
 import type { UserProfile } from './user-profile'
 
 export type UserRow = typeof users.$inferSelect
 
+/** The identity and profile to persist for a user. */
+export interface UpsertUserInput {
+  userId: string
+  profile: UserProfile
+}
+
 /**
  * Returns the user row for the given Clerk user id, or undefined when
  * the user has not been persisted yet.
  */
 export async function findUserById(
+  database: Database,
   userId: string,
 ): Promise<UserRow | undefined> {
-  const [userRow] = await getDatabase()
+  const [userRow] = await database
     .select()
     .from(users)
     .where(eq(users.id, userId))
@@ -28,15 +35,15 @@ export async function findUserById(
  * with the same input leaves a single, up-to-date row.
  */
 export async function upsertUser(
-  userId: string,
-  profile: UserProfile,
+  database: Database,
+  input: UpsertUserInput,
 ): Promise<UserRow> {
-  const [userRow] = await getDatabase()
+  const [userRow] = await database
     .insert(users)
-    .values({ id: userId, ...profile })
+    .values({ id: input.userId, ...input.profile })
     .onConflictDoUpdate({
       target: users.id,
-      set: { ...profile, updatedAt: new Date() },
+      set: { ...input.profile, updatedAt: new Date() },
     })
     .returning()
 
@@ -47,6 +54,9 @@ export async function upsertUser(
  * Deletes the user row for the given Clerk user id. Safe to call when
  * the row does not exist.
  */
-export async function deleteUserById(userId: string): Promise<void> {
-  await getDatabase().delete(users).where(eq(users.id, userId))
+export async function deleteUserById(
+  database: Database,
+  userId: string,
+): Promise<void> {
+  await database.delete(users).where(eq(users.id, userId))
 }

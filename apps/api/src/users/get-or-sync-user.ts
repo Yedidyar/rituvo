@@ -1,3 +1,5 @@
+import type { Database } from '../db'
+
 import { syncUserFromClerk } from './sync-user-from-clerk'
 import { findUserById } from './users-repository'
 import type { UserRow } from './users-repository'
@@ -25,13 +27,14 @@ export interface GetOrSyncUserResult {
  * database is unreachable.
  */
 export async function getOrSyncUser(
+  database: Database,
   userId: string,
 ): Promise<GetOrSyncUserResult> {
-  const existingUser = await findUserById(userId)
+  const existingUser = await findUserById(database, userId)
   if (existingUser) {
     return { user: existingUser, syncedFromClerk: false }
   }
 
-  const user = await syncUserFromClerk(userId)
+  const user = await syncUserFromClerk(database, userId)
   return { user, syncedFromClerk: true }
 }

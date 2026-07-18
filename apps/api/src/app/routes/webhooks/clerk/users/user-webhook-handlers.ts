@@ -1,3 +1,5 @@
+import type { Database } from '../../../../../db'
+
 import { handleUserCreated } from './user-created'
 import { handleUserDeleted } from './user-deleted'
 import { handleUserUpdated } from './user-updated'
@@ -16,10 +18,16 @@ const userWebhookHandlers = {
   'user.updated': handleUserUpdated,
   'user.deleted': handleUserDeleted,
 } satisfies {
-  [Event in UserWebhookEvent as Event['type']]: (event: Event) => Promise<void>
+  [Event in UserWebhookEvent as Event['type']]: (
+    database: Database,
+    event: Event,
+  ) => Promise<void>
 }
 
-type UserWebhookHandler = (event: UserWebhookEvent) => Promise<void>
+type UserWebhookHandler = (
+  database: Database,
+  event: UserWebhookEvent,
+) => Promise<void>
 
 /**
  * Routes a user webhook event to its registered handler.
@@ -28,6 +36,7 @@ type UserWebhookHandler = (event: UserWebhookEvent) => Promise<void>
  * version (the map is otherwise exhaustive at compile time).
  */
 export async function handleUserWebhookEvent(
+  database: Database,
   event: UserWebhookEvent,
 ): Promise<void> {
   const handler = userWebhookHandlers[event.type]
@@ -40,5 +49,5 @@ export async function handleUserWebhookEvent(
 
   // The union-keyed lookup loses the event/handler correlation for TS; the
   // keys come from the same discriminant, so the assertion is sound.
-  await (handler as UserWebhookHandler)(event)
+  await (handler as UserWebhookHandler)(database, event)
 }

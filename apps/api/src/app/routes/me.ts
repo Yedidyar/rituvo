@@ -1,7 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { getAuth } from '@clerk/fastify'
 
-import { env } from '../../env'
 import { getOrSyncUser } from '../../users/get-or-sync-user'
 
 /**
@@ -16,7 +15,8 @@ import { getOrSyncUser } from '../../users/get-or-sync-user'
  */
 export default async (fastify: FastifyInstance) => {
   fastify.get('/me', async (request, reply) => {
-    if (!env.CLERK_PUBLISHABLE_KEY || !env.CLERK_SECRET_KEY) {
+    const { publishableKey, secretKey } = fastify.config.clerk
+    if (!publishableKey || !secretKey) {
       return reply.serviceUnavailable('Authentication is not configured')
     }
 
@@ -25,7 +25,7 @@ export default async (fastify: FastifyInstance) => {
       return reply.unauthorized()
     }
 
-    const { user, syncedFromClerk } = await getOrSyncUser(userId)
+    const { user, syncedFromClerk } = await getOrSyncUser(fastify.db, userId)
     if (syncedFromClerk) {
       request.log.info(
         { userId },

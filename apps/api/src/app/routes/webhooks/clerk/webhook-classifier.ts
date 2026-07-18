@@ -1,9 +1,14 @@
 import type { WebhookEvent } from '@clerk/fastify/webhooks'
 
+import type { Database } from '../../../../db'
+
 import { handleUserWebhookEvent } from './users/user-webhook-handlers'
 import type { UserWebhookEvent } from './users/user-webhook-events'
 
-type WebhookFamilyHandler = (event: WebhookEvent) => Promise<void>
+type WebhookFamilyHandler = (
+  database: Database,
+  event: WebhookEvent,
+) => Promise<void>
 
 /**
  * Maps a Clerk webhook event family (the segment of `type` before the
@@ -17,7 +22,8 @@ type WebhookFamilyHandler = (event: WebhookEvent) => Promise<void>
 const webhookHandlersByFamily: Record<string, WebhookFamilyHandler> = {
   // A family string carries no payload type, so each entry asserts the
   // event to the type its module expects.
-  user: (event) => handleUserWebhookEvent(event as UserWebhookEvent),
+  user: (database, event) =>
+    handleUserWebhookEvent(database, event as UserWebhookEvent),
 }
 
 function webhookFamilyOf(event: WebhookEvent): string {
@@ -32,12 +38,15 @@ function webhookFamilyOf(event: WebhookEvent): string {
  * throws for a user.* type its own dictionary does not recognize. Callers
  * are expected to catch this, since it is not the caller's own bug.
  */
-export async function handleWebhook(event: WebhookEvent): Promise<void> {
+export async function handleWebhook(
+  database: Database,
+  event: WebhookEvent,
+): Promise<void> {
   const handler = webhookHandlersByFamily[webhookFamilyOf(event)]
 
   if (!handler) {
     return
   }
 
-  await handler(event)
+  await handler(database, event)
 }
