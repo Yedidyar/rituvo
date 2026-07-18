@@ -12,9 +12,21 @@ concurrency:
 
 jobs:
   checks:
-    name: Lint, Format & Test
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Lint
+            command: pnpm lint
+          - name: Format Check
+            command: pnpm format:check
+          - name: Test API
+            command: pnpm nx test api
+          - name: Test Web
+            command: pnpm nx test web
 
     steps:
       - name: Checkout
@@ -32,11 +44,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Format check
-        run: pnpm format:check
-
-      - name: Test
-        run: pnpm test
+      - name: Run
+        run: ${{ matrix.command }}
