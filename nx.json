@@ -2,7 +2,10 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "analytics": false,
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
@@ -14,7 +17,9 @@
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
-      "exclude": ["apps/web/**"],
+      "exclude": [
+        "apps/web/**"
+      ],
       "options": {
         "typecheck": {
           "targetName": "typecheck"
@@ -45,15 +50,34 @@
         "testTargetName": "test",
         "ciTargetName": "test-ci"
       }
+    },
+    {
+      "plugin": "@nx/docker",
+      "options": {
+        "buildTarget": {
+          "name": "docker:build"
+        },
+        "runTarget": {
+          "name": "docker:run"
+        }
+      }
+    },
+    {
+      "plugin": "./tools/nx-plugins/oxlint.plugin.ts"
     }
   ],
   "targetDefaults": {
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "lint": {
       "cache": true,
-      "inputs": ["default", "{workspaceRoot}/.oxlintrc.json"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.oxlintrc.json"
+      ],
       "executor": "nx:run-commands",
       "options": {
         "command": "oxlint .",
@@ -76,12 +100,33 @@
     },
     "format:check": {
       "cache": true,
-      "inputs": ["default", "{workspaceRoot}/.oxfmtrc.json"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.oxfmtrc.json"
+      ],
       "executor": "nx:run-commands",
       "options": {
         "command": "oxfmt . --check",
         "cwd": "{projectRoot}"
       }
+    },
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production",
+        {
+          "json": "{workspaceRoot}/tsconfig.json",
+          "fields": [
+            "extends",
+            "files",
+            "include"
+          ]
+        }
+      ]
     }
   }
 }
