@@ -13,6 +13,10 @@
     "prepare": "husky"
   },
   "private": true,
+  "packageManager": "pnpm@11.13.1",
+  "engines": {
+    "node": ">=26.5.0"
+  },
   "devDependencies": {
     "@nx/docker": "23.1.0",
     "@nx/esbuild": "23.1.0",

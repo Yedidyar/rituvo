@@ -77,12 +77,21 @@ importers:
       '@fastify/sensible':
         specifier: ~6.0.2
         version: 6.0.4
+      '@t3-oss/env-core':
+        specifier: ^0.13.11
+        version: 0.13.11(typescript@7.0.2)(zod@4.4.3)
+      dotenv:
+        specifier: ^17.3.1
+        version: 17.4.2
       fastify:
         specifier: ~5.2.1
         version: 5.2.2
       fastify-plugin:
         specifier: ~5.0.1
         version: 5.0.1
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   apps/web:
     dependencies:
@@ -9226,6 +9235,11 @@ snapshots:
   '@t3-oss/env-core@0.13.11(typescript@6.0.3)(zod@4.4.3)':
     optionalDependencies:
       typescript: 6.0.3
+      zod: 4.4.3
+
+  '@t3-oss/env-core@0.13.11(typescript@7.0.2)(zod@4.4.3)':
+    optionalDependencies:
+      typescript: 7.0.2
       zod: 4.4.3
 
   '@tailwindcss/node@4.3.3':
