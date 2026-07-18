@@ -3,6 +3,10 @@ export const en = {
     language: 'Language',
     switchTo: 'Switch to {{language}}',
   },
+  auth: {
+    signIn: 'Sign in',
+    signUp: 'Sign up',
+  },
   home: {
     title: 'Welcome to Rituvo',
     description:

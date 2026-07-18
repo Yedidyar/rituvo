@@ -2,6 +2,13 @@
   "name": "@rituvo/api",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:pull": "drizzle-kit pull",
+    "db:studio": "drizzle-kit studio"
+  },
   "nx": {
     "targets": {
       "build": {
@@ -125,12 +132,20 @@
     }
   },
   "dependencies": {
+    "@clerk/fastify": "^3.1.53",
     "@fastify/autoload": "~6.0.3",
+    "@fastify/cors": "^11.3.0",
     "@fastify/sensible": "~6.0.2",
     "@t3-oss/env-core": "^0.13.11",
     "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.2",
     "fastify": "~5.2.1",
     "fastify-plugin": "~5.0.1",
+    "pg": "^8.22.0",
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.20.0",
+    "drizzle-kit": "^0.31.10"
   }
 }

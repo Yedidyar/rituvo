@@ -1,22 +1,26 @@
-import { ClerkProvider } from '@clerk/clerk-react'
+import { ClerkProvider } from '@clerk/tanstack-react-start'
+import { heIL } from '@clerk/localizations'
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
-const CLERK_ENABLED =
-  import.meta.env.VITE_CLERK_ENABLED !== 'false' &&
-  typeof PUBLISHABLE_KEY === 'string' &&
-  PUBLISHABLE_KEY.startsWith('pk_')
+import { useLocale } from '#/i18n/locale-provider'
+
+import { clerkEnabled } from './clerk-enabled'
 
 export default function AppClerkProvider({
   children,
 }: {
   children: React.ReactNode
 }) {
-  if (!CLERK_ENABLED) {
+  const { locale } = useLocale()
+
+  if (!clerkEnabled) {
     return children
   }
 
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider
+      afterSignOutUrl="/"
+      localization={locale === 'he' ? heIL : undefined}
+    >
       {children}
     </ClerkProvider>
   )
