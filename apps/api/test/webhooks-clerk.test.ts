@@ -57,6 +57,10 @@ function userCreatedEvent(overrides: Partial<WebhookUserData> = {}) {
   }
 }
 
+function userUpdatedEvent(overrides: Partial<WebhookUserData> = {}) {
+  return { ...userCreatedEvent(overrides), type: 'user.updated' }
+}
+
 async function postWebhook(fastify: FastifyInstance, event: unknown) {
   const payload = JSON.stringify(event)
   return fastify.inject({
@@ -106,7 +110,7 @@ describe('POST /webhooks/clerk against real Postgres', () => {
     await postWebhook(fastify, userCreatedEvent())
     const response = await postWebhook(
       fastify,
-      userCreatedEvent({ first_name: 'Augusta Ada' }),
+      userUpdatedEvent({ first_name: 'Augusta Ada' }),
     )
 
     expect(response.statusCode).toBe(200)
