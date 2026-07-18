@@ -6,7 +6,7 @@
 #   docker compose down -v     stop it and delete all data
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     container_name: rituvo-postgres
     restart: unless-stopped
     environment:
@@ -16,7 +16,8 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - rituvo-postgres-data:/var/lib/postgresql/data
+      # PG18 mounts data at /var/lib/postgresql (PG17 and older used .../data).
+      - rituvo-postgres-data:/var/lib/postgresql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U rituvo -d rituvo']
       interval: 5s
