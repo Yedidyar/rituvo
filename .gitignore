@@ -49,5 +49,6 @@ vite.config.*.timestamp*
 
 # Env files (keep .env.example tracked)
 .env
-.env.*
+.env.local
+.env*
 !.env.example
