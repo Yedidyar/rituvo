@@ -1,7 +1,20 @@
 {
-  "name": "web",
+  "name": "@rituvo/web",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
+  "nx": {
+    "sourceRoot": "apps/web/src",
+    "projectType": "application",
+    "tags": [],
+    "targets": {
+      "test": {
+        "options": {
+          "command": "vitest run --passWithNoTests"
+        }
+      }
+    }
+  },
   "imports": {
     "#/*": "./src/*"
   },

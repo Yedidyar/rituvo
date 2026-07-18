@@ -1,5 +1,5 @@
 {
-  "projectName": "web",
+  "projectName": "@rituvo/web",
   "mode": "file-router",
   "typescript": true,
   "packageManager": "pnpm",

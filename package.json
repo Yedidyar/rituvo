@@ -8,7 +8,9 @@
     "preview": "nx run-many -t preview",
     "test": "nx run-many -t test",
     "lint": "nx run-many -t lint",
-    "typecheck": "nx run-many -t typecheck"
+    "format:check": "nx run-many -t format:check",
+    "typecheck": "nx run-many -t typecheck",
+    "prepare": "husky"
   },
   "private": true,
   "devDependencies": {
@@ -23,6 +25,7 @@
     "@swc/helpers": "~0.5.18",
     "@types/node": "^22.0.0",
     "esbuild": "^0.27.0",
+    "husky": "^9.1.7",
     "jiti": "2.4.2",
     "nx": "23.1.0",
     "oxfmt": "^0.59.0",
@@ -31,11 +34,5 @@
     "typescript": "npm:@typescript/typescript6@~6.0.2",
     "typescript-7": "npm:typescript@~7.0.2",
     "vite": "^8.0.0"
-  },
-  "dependencies": {
-    "@fastify/autoload": "~6.0.3",
-    "@fastify/sensible": "~6.0.2",
-    "fastify": "~5.2.1",
-    "fastify-plugin": "~5.0.1"
   }
 }
