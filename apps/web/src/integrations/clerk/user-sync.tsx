@@ -32,9 +32,12 @@ export default function UserSync() {
         if (!token || !active) {
           return
         }
-        await fetch(`${apiUrl}/me`, {
+        const response = await fetch(`${apiUrl}/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
+        if (!response.ok) {
+          throw new Error(`User sync failed with status ${response.status}`)
+        }
       } catch {
         // Allow a later render to retry if the sync request failed.
         syncedUserId.current = null

@@ -8,6 +8,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import ClerkProvider from '../integrations/clerk/provider'
 import UserSync from '../integrations/clerk/user-sync'
+import { clerkEnabled } from '../integrations/clerk/clerk-enabled'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
@@ -56,7 +57,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <LocaleProvider>
           <ClerkProvider>
-            <UserSync />
+            {clerkEnabled && <UserSync />}
             {children}
             <TanStackDevtools
               config={{

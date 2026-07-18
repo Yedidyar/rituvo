@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { verifyWebhook } from '@clerk/fastify/webhooks'
+import type { WebhookEvent } from '@clerk/fastify/webhooks'
 
 import { env } from '../../../../env'
 
@@ -23,14 +24,13 @@ export default async (fastify: FastifyInstance) => {
       return reply.serviceUnavailable('Clerk webhooks are not configured')
     }
 
-    const event = await verifyWebhook(request, {
-      signingSecret: env.CLERK_WEBHOOK_SIGNING_SECRET,
-    }).catch((error: unknown) => {
+    let event: WebhookEvent
+    try {
+      event = await verifyWebhook(request, {
+        signingSecret: env.CLERK_WEBHOOK_SIGNING_SECRET,
+      })
+    } catch (error) {
       request.log.warn({ err: error }, 'Clerk webhook verification failed')
-      return null
-    })
-
-    if (!event) {
       return reply.badRequest('Webhook signature verification failed')
     }
 

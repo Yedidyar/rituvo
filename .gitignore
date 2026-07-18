@@ -46,3 +46,8 @@ Thumbs.db
 
 vite.config.*.timestamp*
 .pnpm-store
+
+# Env files (keep .env.example tracked)
+.env
+.env.*
+!.env.example
