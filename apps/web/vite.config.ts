@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
       babel({ presets: [reactCompilerPreset()] }),
     ].filter((plugin) => Boolean(plugin)),
     test: {
-      name: "web",
+      name: "@rituvo/web",
       globals: true,
       environment: "jsdom",
       passWithNoTests: true,

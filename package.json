@@ -31,11 +31,5 @@
     "typescript": "npm:@typescript/typescript6@~6.0.2",
     "typescript-7": "npm:typescript@~7.0.2",
     "vite": "^8.0.0"
-  },
-  "dependencies": {
-    "@fastify/autoload": "~6.0.3",
-    "@fastify/sensible": "~6.0.2",
-    "fastify": "~5.2.1",
-    "fastify-plugin": "~5.0.1"
   }
 }
