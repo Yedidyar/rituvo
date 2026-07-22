@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/tanstack-react-start'
 
-import { clerkEnabled } from './clerk-enabled'
 import { createApiClient } from '../orpc/client'
 
 export type { CurrentUser } from '@rituvo/api-contract'
@@ -18,7 +17,7 @@ export function useCurrentUser() {
 
   return useQuery({
     queryKey: ['current-user', getToken],
-    enabled: clerkEnabled && Boolean(isSignedIn),
+    enabled: Boolean(isSignedIn),
     staleTime: Infinity,
     queryFn: async () => {
       const client = createApiClient(getToken)

@@ -10,7 +10,7 @@ export interface AppConfig {
   readonly host: string
   readonly port: number
   readonly webOrigin: string
-  readonly databaseUrl?: string
+  readonly databaseUrl: string
   readonly clerk: {
     readonly publishableKey?: string
     readonly secretKey?: string
@@ -41,7 +41,7 @@ export function loadConfig(): AppConfig {
       HOST: z.string().min(1),
       PORT: z.coerce.number().int().min(1).max(65535),
       WEB_ORIGIN: z.url(),
-      DATABASE_URL: z.url().optional(),
+      DATABASE_URL: z.url(),
       CLERK_PUBLISHABLE_KEY: z.string().optional(),
       CLERK_SECRET_KEY: z.string().optional(),
       CLERK_WEBHOOK_SIGNING_SECRET: z.string().optional(),
