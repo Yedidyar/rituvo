@@ -20,7 +20,7 @@ function Home() {
         {translate('home.title')}
       </h1>
       <p className="mt-4 text-lg">{translate('home.description')}</p>
-      <p className="mt-4 text-muted-foreground">
+      <p className="text-muted-foreground mt-4">
         {translate('home.editHintBefore')} <code>src/routes/index.tsx</code>{' '}
         {translate('home.editHintAfter')}
       </p>

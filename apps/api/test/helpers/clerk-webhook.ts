@@ -23,7 +23,8 @@ export function signClerkWebhook(
   payload: string,
 ): SvixHeaders {
   const webhook = new Webhook(signingSecret)
-  const messageId = `msg_test_${(messageCounter += 1)}`
+  messageCounter += 1
+  const messageId = `msg_test_${messageCounter}`
   const timestamp = new Date()
   const signature = webhook.sign(messageId, timestamp, payload)
 

@@ -10,7 +10,7 @@ import { createDatabase } from '../../db'
  * When no DATABASE_URL is configured the server still boots — mirroring the
  * Clerk plugin — and routes that need the database fail when exercised.
  */
-export default fp(async function (fastify: FastifyInstance) {
+export default fp(async (fastify: FastifyInstance) => {
   const { databaseUrl } = fastify.config
   if (!databaseUrl) {
     fastify.log.warn('DATABASE_URL missing — database features are disabled')

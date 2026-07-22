@@ -16,7 +16,7 @@ import { handleWebhook } from './webhook-classifier'
  * 500 when a handler fails (Svix retries), 503 when the signing secret
  * is not configured.
  */
-export default async (fastify: FastifyInstance) => {
+export default async function clerkWebhookRoutes(fastify: FastifyInstance) {
   fastify.post('/', async (request, reply) => {
     const { webhookSigningSecret } = fastify.config.clerk
     if (!webhookSigningSecret) {

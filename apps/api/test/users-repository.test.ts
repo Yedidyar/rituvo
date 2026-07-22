@@ -33,7 +33,7 @@ let database: Database
 
 beforeAll(() => {
   connection = createDatabase(inject('databaseUrl'))
-  database = connection.database
+  ;({ database } = connection)
 })
 
 afterAll(() => connection.close())

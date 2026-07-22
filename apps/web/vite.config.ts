@@ -12,9 +12,10 @@ import tailwindcss from '@tailwindcss/vite'
 import { nitro } from 'nitro/vite'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const sentryExternalPattern = /^@sentry\//
 
 export default defineConfig(({ mode }) => {
-  const isTest = mode === 'test' || !!process.env.VITEST
+  const isTest = mode === 'test' || Boolean(process.env.VITEST)
 
   return {
     root: __dirname,
@@ -27,22 +28,24 @@ export default defineConfig(({ mode }) => {
       outDir: './dist',
     },
     server: {
-      port: 3000,
-      host: 'localhost',
+      port: Number(process.env.PORT) || 3000,
+      host: process.env.HOST || 'localhost',
     },
     preview: {
-      port: 3000,
-      host: 'localhost',
+      port: Number(process.env.PORT) || 3000,
+      host: process.env.HOST || 'localhost',
     },
     plugins: [
       !isTest && devtools(),
       !isTest &&
-        nitro({ config: { rollupConfig: { external: [/^@sentry\//] } } }),
+        nitro({
+          config: { rollupConfig: { external: [sentryExternalPattern] } },
+        }),
       tailwindcss(),
       !isTest && tanstackStart(),
       viteReact(),
       babel({ presets: [reactCompilerPreset()] }),
-    ].filter((plugin) => Boolean(plugin)),
+    ].filter(Boolean),
     test: {
       name: '@rituvo/web',
       globals: true,

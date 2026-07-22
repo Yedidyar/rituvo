@@ -8,7 +8,7 @@ import cors from '@fastify/cors'
  *
  * @see https://github.com/fastify/fastify-cors
  */
-export default fp(async function (fastify: FastifyInstance) {
+export default fp(async (fastify: FastifyInstance) => {
   fastify.register(cors, {
     origin: fastify.config.webOrigin,
     methods: ['GET', 'POST', 'OPTIONS'],

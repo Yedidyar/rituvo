@@ -9,7 +9,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
     <div className={cn('flex items-center gap-2', className)}>
       <span className="sr-only">{translate('common.language')}</span>
       <div
-        className="inline-flex rounded-lg border border-border bg-background p-0.5"
+        className="border-border bg-background inline-flex rounded-lg border p-0.5"
         role="group"
         aria-label={translate('common.language')}
       >

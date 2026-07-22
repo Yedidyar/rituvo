@@ -2,6 +2,9 @@ packages:
   - "apps/*"
   - "packages/*"
 
+overrides:
+  "@tanstack/query-core": "5.101.3"
+
 allowBuilds:
   "@clerk/shared": true
   # cpu-features, protobufjs and ssh2 come in transitively with Testcontainers

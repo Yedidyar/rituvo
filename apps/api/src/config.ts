@@ -28,9 +28,9 @@ export interface AppConfig {
  * the ones that don't resolve. In production the files are absent and values
  * come from the process environment.
  *
- * @throws When a required variable (HOST, PORT, WEB_ORIGIN) is missing or a
- * value fails validation — surfaced eagerly so misconfiguration fails at
- * startup rather than at first use.
+ * @throws When a required variable fails validation — surfaced eagerly so
+ * misconfiguration fails at startup rather than at first use. HOST, PORT, and
+ * WEB_ORIGIN fall back to local defaults when unset.
  */
 export function loadConfig(): AppConfig {
   loadDotenv({
@@ -39,9 +39,9 @@ export function loadConfig(): AppConfig {
 
   const env = createEnv({
     server: {
-      HOST: z.string().min(1),
-      PORT: z.coerce.number().int().min(1).max(65535),
-      WEB_ORIGIN: z.string().url(),
+      HOST: z.string().min(1).default('127.0.0.1'),
+      PORT: z.coerce.number().int().min(1).max(65535).default(3001),
+      WEB_ORIGIN: z.string().url().default('http://localhost:3000'),
       DATABASE_URL: z.string().url().optional(),
       CLERK_PUBLISHABLE_KEY: z.string().optional(),
       CLERK_SECRET_KEY: z.string().optional(),
