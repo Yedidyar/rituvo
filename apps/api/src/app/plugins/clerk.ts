@@ -10,7 +10,7 @@ import { clerkPlugin } from '@clerk/fastify'
  *
  * @see https://clerk.com/docs/fastify/getting-started/quickstart
  */
-export default fp(async function (fastify: FastifyInstance) {
+export default fp(async (fastify: FastifyInstance) => {
   const { publishableKey, secretKey } = fastify.config.clerk
   if (!publishableKey || !secretKey) {
     fastify.log.warn(

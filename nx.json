@@ -82,15 +82,15 @@
       ],
       "executor": "nx:run-commands",
       "options": {
-        "command": "oxlint .",
-        "cwd": "{projectRoot}"
+        "command": "oxlint {projectRoot} --type-aware",
+        "cwd": "{workspaceRoot}"
       }
     },
     "lint:fix": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "oxlint . --fix",
-        "cwd": "{projectRoot}"
+        "command": "oxlint {projectRoot} --type-aware --fix",
+        "cwd": "{workspaceRoot}"
       }
     },
     "format": {

@@ -32,7 +32,7 @@ const LocaleContext = createContext<LocaleContextValue | null>(null)
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === 'undefined') {
+    if (globalThis.window === undefined) {
       return defaultLocale
     }
 
@@ -42,7 +42,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const setLocale = useCallback((nextLocale: Locale) => {
     setLocaleState(nextLocale)
     try {
-      window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
+      globalThis.window.localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
     } catch {
       // Storage may be unavailable in restricted contexts.
     }
@@ -100,12 +100,12 @@ function detectBrowserLocale(): Locale {
 }
 
 function readStoredLocale(): Locale | null {
-  if (typeof window === 'undefined') {
+  if (globalThis.window === undefined) {
     return null
   }
 
   try {
-    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY)
+    const stored = globalThis.window.localStorage.getItem(LOCALE_STORAGE_KEY)
     return stored && isLocale(stored) ? stored : null
   } catch {
     return null

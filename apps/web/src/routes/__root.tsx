@@ -6,9 +6,8 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
-import ClerkProvider from '../integrations/clerk/provider'
+import AppClerkProvider from '../integrations/clerk/provider'
 import UserSync from '../integrations/clerk/user-sync'
-import { clerkEnabled } from '../integrations/clerk/clerk-enabled'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
@@ -27,7 +26,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: 'utf8',
       },
       {
         name: 'viewport',
@@ -56,8 +55,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <LocaleProvider>
-          <ClerkProvider>
-            {clerkEnabled && <UserSync />}
+          <AppClerkProvider>
+            <UserSync />
             {children}
             <TanStackDevtools
               config={{
@@ -71,7 +70,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                 TanStackQueryDevtools,
               ]}
             />
-          </ClerkProvider>
+          </AppClerkProvider>
         </LocaleProvider>
         <Scripts />
       </body>

@@ -15,8 +15,8 @@ server.register(app, { config })
 server.listen({ port: config.port, host: config.host }, (err) => {
   if (err) {
     server.log.error(err)
-    process.exit(1)
-  } else {
-    console.log(`[ ready ] http://${config.host}:${config.port}`)
+    throw err
   }
+
+  server.log.info(`[ ready ] http://${config.host}:${config.port}`)
 })

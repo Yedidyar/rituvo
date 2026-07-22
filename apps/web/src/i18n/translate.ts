@@ -34,14 +34,19 @@ function getNestedValue(
   obj: Record<string, unknown>,
   path: string,
 ): string | undefined {
-  const value = path.split('.').reduce<unknown>((current, segment) => {
-    if (current && typeof current === 'object' && segment in current) {
-      return (current as Record<string, unknown>)[segment]
-    }
-    return undefined
-  }, obj)
+  const segments = path.split('.')
+  let current: unknown = obj
 
-  return typeof value === 'string' ? value : undefined
+  for (const segment of segments) {
+    if (current && typeof current === 'object' && segment in current) {
+      current = (current as Record<string, unknown>)[segment]
+      continue
+    }
+
+    return undefined
+  }
+
+  return typeof current === 'string' ? current : undefined
 }
 
 function interpolate(template: string, values?: InterpolationValues): string {
@@ -49,7 +54,7 @@ function interpolate(template: string, values?: InterpolationValues): string {
     return template
   }
 
-  return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
+  return template.replaceAll(/{{(\w+)}}/g, (_, key: string) => {
     const value = values[key]
     return value === undefined ? `{{${key}}}` : String(value)
   })

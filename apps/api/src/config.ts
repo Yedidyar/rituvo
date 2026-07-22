@@ -10,7 +10,7 @@ export interface AppConfig {
   readonly host: string
   readonly port: number
   readonly webOrigin: string
-  readonly databaseUrl?: string
+  readonly databaseUrl: string
   readonly clerk: {
     readonly publishableKey?: string
     readonly secretKey?: string
@@ -28,9 +28,8 @@ export interface AppConfig {
  * the ones that don't resolve. In production the files are absent and values
  * come from the process environment.
  *
- * @throws When a required variable (HOST, PORT, WEB_ORIGIN) is missing or a
- * value fails validation — surfaced eagerly so misconfiguration fails at
- * startup rather than at first use.
+ * @throws When a required variable fails validation — surfaced eagerly so
+ * misconfiguration fails at startup rather than at first use.
  */
 export function loadConfig(): AppConfig {
   loadDotenv({
@@ -41,8 +40,8 @@ export function loadConfig(): AppConfig {
     server: {
       HOST: z.string().min(1),
       PORT: z.coerce.number().int().min(1).max(65535),
-      WEB_ORIGIN: z.string().url(),
-      DATABASE_URL: z.string().url().optional(),
+      WEB_ORIGIN: z.url(),
+      DATABASE_URL: z.url(),
       CLERK_PUBLISHABLE_KEY: z.string().optional(),
       CLERK_SECRET_KEY: z.string().optional(),
       CLERK_WEBHOOK_SIGNING_SECRET: z.string().optional(),

@@ -10,22 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
 import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
+import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SignUpSplatRoute = SignUpSplatRouteImport.update({
-  id: '/sign-up/$',
-  path: '/sign-up/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SignInSplatRoute = SignInSplatRouteImport.update({
   id: '/sign-in/$',
   path: '/sign-in/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpSplatRoute = SignUpSplatRouteImport.update({
+  id: '/sign-up/$',
+  path: '/sign-up/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -68,18 +68,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sign-up/$': {
-      id: '/sign-up/$'
-      path: '/sign-up/$'
-      fullPath: '/sign-up/$'
-      preLoaderRoute: typeof SignUpSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sign-in/$': {
       id: '/sign-in/$'
       path: '/sign-in/$'
       fullPath: '/sign-in/$'
       preLoaderRoute: typeof SignInSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up/$': {
+      id: '/sign-up/$'
+      path: '/sign-up/$'
+      fullPath: '/sign-up/$'
+      preLoaderRoute: typeof SignUpSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

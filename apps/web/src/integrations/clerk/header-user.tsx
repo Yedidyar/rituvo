@@ -8,14 +8,8 @@ import {
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/i18n/locale-provider'
 
-import { clerkEnabled } from './clerk-enabled'
-
 export default function HeaderUser() {
   const { translate } = useTranslation()
-
-  if (!clerkEnabled) {
-    return null
-  }
 
   return (
     <div className="flex items-center gap-2">

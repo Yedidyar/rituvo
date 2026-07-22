@@ -23,7 +23,7 @@ import { CLERK_WEBHOOK_TEST_SECRET, testConfig } from './helpers/test-config'
 // keys or network. Signature verification lives in '@clerk/fastify/webhooks',
 // a separate module left untouched — so the webhook route verifies for real.
 vi.mock('@clerk/fastify', async () => {
-  const fastifyPlugin = (await import('fastify-plugin')).default
+  const { default: fastifyPlugin } = await import('fastify-plugin')
   return {
     clerkPlugin: fastifyPlugin(async () => {}),
     getAuth: vi.fn(),
@@ -81,7 +81,7 @@ let database: Database
 beforeAll(async () => {
   const databaseUrl = inject('databaseUrl')
   connection = createDatabase(databaseUrl)
-  database = connection.database
+  ;({ database } = connection)
   fastify = await buildTestApp(testConfig(databaseUrl))
 })
 

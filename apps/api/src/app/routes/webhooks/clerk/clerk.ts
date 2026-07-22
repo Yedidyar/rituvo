@@ -14,9 +14,9 @@ import { handleWebhook } from './webhook-classifier'
  *
  * Responses: 200 when processed, 400 on signature failure,
  * 500 when a handler fails (Svix retries), 503 when the signing secret
- * is not configured.
+ * or database is not configured.
  */
-export default async (fastify: FastifyInstance) => {
+export default async function clerkWebhookRoutes(fastify: FastifyInstance) {
   fastify.post('/', async (request, reply) => {
     const { webhookSigningSecret } = fastify.config.clerk
     if (!webhookSigningSecret) {
@@ -31,6 +31,10 @@ export default async (fastify: FastifyInstance) => {
     } catch (error) {
       request.log.warn({ err: error }, 'Clerk webhook verification failed')
       return reply.badRequest('Webhook signature verification failed')
+    }
+
+    if (!fastify.config.databaseUrl) {
+      return reply.serviceUnavailable('Database is not configured')
     }
 
     try {

@@ -9,6 +9,8 @@ import {
   vi,
 } from 'vitest'
 import type { FastifyInstance } from 'fastify'
+import { createORPCClient } from '@orpc/client'
+import { RPCLink } from '@orpc/client/fetch'
 import { clerkClient, getAuth } from '@clerk/fastify'
 
 import { createDatabase } from '../src/db'
@@ -24,7 +26,7 @@ import { testConfig } from './helpers/test-config'
 // genuine network boundaries, so they are the only things mocked here. The
 // users table the route reads and writes stays a real Postgres database.
 vi.mock('@clerk/fastify', async () => {
-  const fastifyPlugin = (await import('fastify-plugin')).default
+  const { default: fastifyPlugin } = await import('fastify-plugin')
   return {
     clerkPlugin: fastifyPlugin(async () => {}),
     getAuth: vi.fn(),
@@ -39,8 +41,8 @@ const graceProfile: UserProfile = {
   imageUrl: 'https://img.example.com/grace.png',
 }
 
-// The /me route reads only userId off the auth object; getAuth's full return
-// type cannot be inferred for a partial mock, so it is asserted here.
+// The user.current procedure reads only userId off the auth object; getAuth's
+// full return type cannot be inferred for a partial mock, so it is asserted here.
 function authFor(userId: string | null) {
   return { userId } as ReturnType<typeof getAuth>
 }
@@ -57,8 +59,27 @@ function clerkApiUser() {
   } as Awaited<ReturnType<typeof clerkClient.users.getUser>>
 }
 
-async function getMe(fastify: FastifyInstance) {
-  return fastify.inject({ method: 'GET', url: '/me' })
+function createTestClient(fastify: FastifyInstance) {
+  const link = new RPCLink({
+    url: 'http://localhost:3001/rpc',
+    fetch: async (request, init) => {
+      const body = init?.body ?? (await request.arrayBuffer())
+
+      const result = await fastify.inject({
+        method: request.method,
+        url: new URL(request.url).pathname + new URL(request.url).search,
+        headers: Object.fromEntries(request.headers.entries()),
+        payload: body.byteLength > 0 ? Buffer.from(body) : undefined,
+      })
+
+      return new Response(result.payload, {
+        status: result.statusCode,
+        headers: result.headers,
+      })
+    },
+  })
+
+  return createORPCClient(link)
 }
 
 let fastify: FastifyInstance
@@ -68,7 +89,7 @@ let database: Database
 beforeAll(async () => {
   const databaseUrl = inject('databaseUrl')
   connection = createDatabase(databaseUrl)
-  database = connection.database
+  ;({ database } = connection)
   fastify = await buildTestApp(testConfig(databaseUrl))
 })
 
@@ -83,7 +104,7 @@ beforeEach(async () => {
   vi.mocked(clerkClient.users.getUser).mockReset()
 })
 
-describe('GET /me against real Postgres', () => {
+describe('user.current oRPC procedure against real Postgres', () => {
   it('returns the stored user for a signed-in request', async () => {
     await upsertUser(database, {
       userId: 'user_grace',
@@ -91,10 +112,10 @@ describe('GET /me against real Postgres', () => {
     })
     vi.mocked(getAuth).mockReturnValue(authFor('user_grace'))
 
-    const response = await getMe(fastify)
+    const client = createTestClient(fastify)
+    const user = await client.user.current()
 
-    expect(response.statusCode).toBe(200)
-    expect(response.json()).toMatchObject({
+    expect(user).toMatchObject({
       id: 'user_grace',
       email: 'grace@example.com',
       firstName: 'Grace',
@@ -106,10 +127,10 @@ describe('GET /me against real Postgres', () => {
     vi.mocked(getAuth).mockReturnValue(authFor('user_grace'))
     vi.mocked(clerkClient.users.getUser).mockResolvedValue(clerkApiUser())
 
-    const response = await getMe(fastify)
+    const client = createTestClient(fastify)
+    const user = await client.user.current()
 
-    expect(response.statusCode).toBe(200)
-    expect(response.json()).toMatchObject({
+    expect(user).toMatchObject({
       id: 'user_grace',
       email: 'grace@example.com',
     })
@@ -125,8 +146,10 @@ describe('GET /me against real Postgres', () => {
   it('returns 401 when the request is not signed in', async () => {
     vi.mocked(getAuth).mockReturnValue(authFor(null))
 
-    const response = await getMe(fastify)
+    const client = createTestClient(fastify)
 
-    expect(response.statusCode).toBe(401)
+    await expect(client.user.current()).rejects.toMatchObject({
+      code: 'UNAUTHORIZED',
+    })
   })
 })
