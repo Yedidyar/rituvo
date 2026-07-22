@@ -29,8 +29,7 @@ export interface AppConfig {
  * come from the process environment.
  *
  * @throws When a required variable fails validation — surfaced eagerly so
- * misconfiguration fails at startup rather than at first use. HOST, PORT, and
- * WEB_ORIGIN fall back to local defaults when unset.
+ * misconfiguration fails at startup rather than at first use.
  */
 export function loadConfig(): AppConfig {
   loadDotenv({
@@ -39,10 +38,10 @@ export function loadConfig(): AppConfig {
 
   const env = createEnv({
     server: {
-      HOST: z.string().min(1).default('127.0.0.1'),
-      PORT: z.coerce.number().int().min(1).max(65535).default(3001),
-      WEB_ORIGIN: z.string().url().default('http://localhost:3000'),
-      DATABASE_URL: z.string().url().optional(),
+      HOST: z.string().min(1),
+      PORT: z.coerce.number().int().min(1).max(65535),
+      WEB_ORIGIN: z.url(),
+      DATABASE_URL: z.url().optional(),
       CLERK_PUBLISHABLE_KEY: z.string().optional(),
       CLERK_SECRET_KEY: z.string().optional(),
       CLERK_WEBHOOK_SIGNING_SECRET: z.string().optional(),
