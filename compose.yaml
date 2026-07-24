@@ -1,0 +1,27 @@
+# Local development services for Rituvo.
+# Not intended for production — credentials here are local-only.
+#
+#   docker compose up -d      start Postgres in the background
+#   docker compose down       stop it (data is preserved in the volume)
+#   docker compose down -v     stop it and delete all data
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: rituvo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rituvo
+      POSTGRES_PASSWORD: rituvo
+      POSTGRES_DB: rituvo
+    ports:
+      - "5432:5432"
+    volumes:
+      - rituvo-postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rituvo -d rituvo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  rituvo-postgres-data:
