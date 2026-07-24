@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Heebo:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+/* Becoming design system fonts — Hebrew subset is served automatically via unicode-range */
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap');
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
@@ -27,6 +29,25 @@
   --link-bg-hover: rgba(255, 255, 255, 0.9);
   --hero-a: rgba(79, 184, 178, 0.36);
   --hero-b: rgba(47, 106, 74, 0.2);
+
+  /* Becoming design system (warm organic) */
+  --color-cream: #faf7f1;
+  --color-paper: #ffffff;
+  --color-sand: #f0eadc;
+  --color-line: #e9e2d3;
+  --color-line-strong: #d8cfbb;
+  --color-ink: #22302a;
+  --color-moss: #66756c;
+  --color-leaf: #2f6b4f;
+  --color-leaf-dark: #27593f;
+  --color-deep-leaf: #1e3d2d;
+  --color-clay: #c2703e;
+  --color-leaf-soft: #eaf1ec;
+  --color-clay-soft: #f6ebdd;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+  --font-heading: 'Frank Ruhl Libre', Georgia, serif;
+  --font-body: 'Assistant', ui-sans-serif, system-ui, sans-serif;
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -269,6 +290,33 @@ pre code {
 
 .display-title {
   font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Hide the trailing arrow inside Clerk's primary "Continue" button */
+.cl-buttonArrowIcon {
+  display: none !important;
+}
+
+/* Footer sits in the card flow on white — drop Clerk's grey strip */
+.cl-footer {
+  background: transparent !important;
+}
+
+/* Mobile: the brand header already titles the page, so the start step (the
+   one showing social buttons) drops the card's own title/subtitle. Later
+   steps (email code, etc.) keep theirs. */
+@media (width < 64rem) {
+  .cl-card:has(.cl-socialButtons) .cl-header {
+    display: none;
+  }
 }
 
 .island-shell {

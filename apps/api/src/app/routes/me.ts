@@ -10,16 +10,10 @@ import { getOrSyncUser } from '../../users/get-or-sync-user'
  * after signup before the user.created webhook lands, or in environments
  * without webhooks) it is pulled from Clerk once and persisted.
  *
- * Responses: 200 with the user row, 401 when not signed in,
- * 503 when Clerk is not configured.
+ * Responses: 200 with the user row, 401 when not signed in.
  */
 export default async (fastify: FastifyInstance) => {
   fastify.get('/me', async (request, reply) => {
-    const { publishableKey, secretKey } = fastify.config.clerk
-    if (!publishableKey || !secretKey) {
-      return reply.serviceUnavailable('Authentication is not configured')
-    }
-
     const { userId } = getAuth(request)
     if (!userId) {
       return reply.unauthorized()

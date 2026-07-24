@@ -2,9 +2,14 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/tanstack-react-start'
 import { z } from 'zod'
 
-import { clerkEnabled } from './clerk-enabled'
-
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
+
+/**
+ * React Query key for the signed-in user's row. Shared so any screen can read
+ * the cached user or invalidate it (e.g. after a profile update) without
+ * duplicating the key string.
+ */
+export const currentUserQueryKey = ['current-user'] as const
 
 const currentUserSchema = z.object({
   id: z.string(),
@@ -30,8 +35,8 @@ export function useCurrentUser() {
   const { isSignedIn, getToken } = useAuth()
 
   return useQuery({
-    queryKey: ['current-user'],
-    enabled: clerkEnabled && Boolean(isSignedIn),
+    queryKey: currentUserQueryKey,
+    enabled: Boolean(isSignedIn),
     staleTime: Infinity,
     queryFn: async (): Promise<CurrentUser> => {
       const token = await getToken()

@@ -14,12 +14,11 @@ services:
       POSTGRES_PASSWORD: rituvo
       POSTGRES_DB: rituvo
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      # PG18 mounts data at /var/lib/postgresql (PG17 and older used .../data).
       - rituvo-postgres-data:/var/lib/postgresql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U rituvo -d rituvo']
+      test: ["CMD-SHELL", "pg_isready -U rituvo -d rituvo"]
       interval: 5s
       timeout: 5s
       retries: 10

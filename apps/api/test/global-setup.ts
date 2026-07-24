@@ -33,7 +33,10 @@ export async function setup(project: TestProject): Promise<void> {
 
   const pool = new Pool({ connectionString: databaseUrl })
   try {
-    const { apply } = await pushSchema(schema, drizzle(pool, { schema }))
+    // pushSchema takes the schema as its first argument and only needs a bare
+    // db handle to execute the generated DDL, so drizzle is created without the
+    // schema binding (passing the schema-typed instance mismatches its type).
+    const { apply } = await pushSchema(schema, drizzle(pool))
     await apply()
   } finally {
     await pool.end()
