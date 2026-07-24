@@ -9,22 +9,10 @@ allowBuilds:
   # which we don't use — the local socket path never loads them.
   cpu-features: false
   esbuild: true
+  lightningcss: true
   nx: true
   protobufjs: false
   ssh2: false
   unrs-resolver: true
 
 autoInstallPeers: true
-onlyBuiltDependencies:
-  - esbuild
-  - lightningcss
-  - nx
-
-# Testcontainers pulls these in transitively (dockerode → ssh2). Their native
-# build scripts are optional — Testcontainers talks to Docker over the local
-# socket, not SSH, so the bindings are never loaded. Acknowledge them as
-# intentionally not built so pnpm does not fail the install on ignored builds.
-ignoredBuiltDependencies:
-  - cpu-features
-  - protobufjs
-  - ssh2

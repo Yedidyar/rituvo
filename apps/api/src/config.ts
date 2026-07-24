@@ -14,39 +14,43 @@ export interface AppConfig {
   readonly clerk: {
     readonly publishableKey: string
     readonly secretKey: string
-    readonly webhookSigningSecret: string
+    // Optional only when NODE_ENV=development (webhooks can't reach localhost).
+    readonly webhookSigningSecret?: string
   }
 }
 
 /**
- * Loads and validates configuration from the environment, returning a typed,
- * immutable config object. Call this once in main.ts and thread the result
- * through the app rather than reaching for the environment elsewhere.
+ * Loads and validates configuration from the environment. Call once in
+ * main.ts and thread the result through the app.
  *
  * nx runs the API from the workspace root and drizzle-kit runs it from
- * apps/api, so this app's env files are listed relative to both; dotenv skips
- * the ones that don't resolve. In production the files are absent and values
- * come from the process environment.
+ * apps/api, so env file paths are listed relative to both; dotenv skips
+ * whichever don't resolve.
  *
- * @throws When a required variable is missing or a value fails validation —
- * surfaced eagerly so misconfiguration fails at startup rather than at first
- * use. The database and Clerk keys are required: the app cannot run without a
- * database or authentication, so their absence stops the server from booting.
+ * @throws When a required variable is missing or invalid.
  */
 export function loadConfig(): AppConfig {
   loadDotenv({
     path: ['apps/api/.env.local', 'apps/api/.env', '.env.local', '.env'],
+    quiet: true,
   })
+
+  const isDevelopment = process.env.NODE_ENV === 'development'
 
   const env = createEnv({
     server: {
       HOST: z.string().min(1),
       PORT: z.coerce.number().int().min(1).max(65535),
       WEB_ORIGIN: z.string().url(),
-      DATABASE_URL: z.string().url(),
+      DATABASE_URL: z.url({
+        protocol: /^postgres(ql)?$/,
+        error: 'DATABASE_URL must use a PostgreSQL URL',
+      }),
       CLERK_PUBLISHABLE_KEY: z.string().min(1),
       CLERK_SECRET_KEY: z.string().min(1),
-      CLERK_WEBHOOK_SIGNING_SECRET: z.string().min(1),
+      CLERK_WEBHOOK_SIGNING_SECRET: isDevelopment
+        ? z.string().min(1).optional()
+        : z.string().min(1),
     },
     runtimeEnv: process.env,
     emptyStringAsUndefined: true,

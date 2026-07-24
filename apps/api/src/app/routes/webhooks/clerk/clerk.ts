@@ -12,12 +12,16 @@ import { handleWebhook } from './webhook-classifier'
  * handleWebhook then classifies the event by family and dispatches it.
  * Family handlers are idempotent, so Svix retries and replays are safe.
  *
- * Responses: 200 when processed, 400 on signature failure,
- * 500 when a handler fails (Svix retries).
+ * Responses: 200 when processed, 400 on signature failure, 500 when a
+ * handler fails (Svix retries), 503 when the signing secret is not
+ * configured (development only).
  */
 export default async (fastify: FastifyInstance) => {
   fastify.post('/', async (request, reply) => {
     const { webhookSigningSecret } = fastify.config.clerk
+    if (!webhookSigningSecret) {
+      return reply.serviceUnavailable('Clerk webhooks are not configured')
+    }
 
     let event: WebhookEvent
     try {
