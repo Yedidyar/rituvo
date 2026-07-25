@@ -7,6 +7,7 @@ config({ path: ['.env.local', '.env'] })
 export const server = {
   DATABASE_URL: z.string().url(),
   SERVER_URL: z.string().url().optional(),
+  CLERK_SECRET_KEY: z.string().optional(),
 }
 
 export const serverEnv = createEnv({

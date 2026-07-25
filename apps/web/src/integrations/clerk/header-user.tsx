@@ -1,28 +1,29 @@
 import {
-  SignedIn,
+  Show,
   SignInButton,
-  SignedOut,
+  SignUpButton,
   UserButton,
-} from '@clerk/clerk-react'
+} from '@clerk/tanstack-react-start'
 
-const CLERK_ENABLED =
-  import.meta.env.VITE_CLERK_ENABLED !== 'false' &&
-  typeof import.meta.env.VITE_CLERK_PUBLISHABLE_KEY === 'string' &&
-  import.meta.env.VITE_CLERK_PUBLISHABLE_KEY.startsWith('pk_')
+import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/i18n/locale-provider'
 
 export default function HeaderUser() {
-  if (!CLERK_ENABLED) {
-    return null
-  }
+  const { translate } = useTranslation()
 
   return (
-    <>
-      <SignedIn>
+    <div className="flex items-center gap-2">
+      <Show when="signed-out">
+        <SignInButton>
+          <Button variant="ghost">{translate('auth.signIn')}</Button>
+        </SignInButton>
+        <SignUpButton>
+          <Button>{translate('auth.signUp')}</Button>
+        </SignUpButton>
+      </Show>
+      <Show when="signed-in">
         <UserButton />
-      </SignedIn>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-    </>
+      </Show>
+    </div>
   )
 }
