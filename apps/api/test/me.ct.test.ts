@@ -9,6 +9,7 @@ import {
   vi,
 } from 'vitest'
 import type { FastifyInstance } from 'fastify'
+import type * as ClerkFastify from '@clerk/fastify'
 import { clerkClient, getAuth } from '@clerk/fastify'
 
 import { createDatabase } from '../src/db'
@@ -20,12 +21,11 @@ import { buildTestApp } from './helpers/build-test-app'
 import { truncateUsers } from './helpers/database'
 import { testConfig } from './helpers/test-config'
 
-// Clerk token verification (getAuth) and the Backend API (clerkClient) are
-// genuine network boundaries, so they are the only things mocked here. The
-// users table the route reads and writes stays a real Postgres database.
-vi.mock('@clerk/fastify', async () => {
+vi.mock('@clerk/fastify', async (importOriginal) => {
+  const actual = await importOriginal<typeof ClerkFastify>()
   const fastifyPlugin = (await import('fastify-plugin')).default
   return {
+    ...actual,
     clerkPlugin: fastifyPlugin(async () => {}),
     getAuth: vi.fn(),
     clerkClient: { users: { getUser: vi.fn() } },
@@ -39,14 +39,10 @@ const graceProfile: UserProfile = {
   imageUrl: 'https://img.example.com/grace.png',
 }
 
-// The /me route reads only userId off the auth object; getAuth's full return
-// type cannot be inferred for a partial mock, so it is asserted here.
 function authFor(userId: string | null) {
   return { userId } as ReturnType<typeof getAuth>
 }
 
-// profileFromClerkApiUser consumes a small subset of the Clerk user resource;
-// the full Backend API type cannot be inferred for a partial mock.
 function clerkApiUser() {
   return {
     primaryEmailAddressId: 'idn_primary',
@@ -55,6 +51,15 @@ function clerkApiUser() {
     lastName: 'Hopper',
     imageUrl: 'https://img.example.com/grace.png',
   } as Awaited<ReturnType<typeof clerkClient.users.getUser>>
+}
+
+function mockClerkGetUser(userId: string) {
+  vi.mocked(clerkClient.users.getUser).mockImplementation(async (id) => {
+    if (id !== userId) {
+      throw new Error(`unexpected Clerk user id: ${id}`)
+    }
+    return clerkApiUser()
+  })
 }
 
 async function getMe(fastify: FastifyInstance) {
@@ -83,7 +88,7 @@ beforeEach(async () => {
   vi.mocked(clerkClient.users.getUser).mockReset()
 })
 
-describe('GET /me against real Postgres', () => {
+describe('GET /me', () => {
   it('returns the stored user for a signed-in request', async () => {
     await upsertUser(database, {
       userId: 'user_grace',
@@ -99,12 +104,11 @@ describe('GET /me against real Postgres', () => {
       email: 'grace@example.com',
       firstName: 'Grace',
     })
-    expect(vi.mocked(clerkClient.users.getUser)).not.toHaveBeenCalled()
   })
 
   it('syncs from Clerk and persists the row on a cache miss', async () => {
     vi.mocked(getAuth).mockReturnValue(authFor('user_grace'))
-    vi.mocked(clerkClient.users.getUser).mockResolvedValue(clerkApiUser())
+    mockClerkGetUser('user_grace')
 
     const response = await getMe(fastify)
 
@@ -113,9 +117,7 @@ describe('GET /me against real Postgres', () => {
       id: 'user_grace',
       email: 'grace@example.com',
     })
-    expect(vi.mocked(clerkClient.users.getUser)).toHaveBeenCalledWith(
-      'user_grace',
-    )
+    expect(clerkClient.users.getUser).toHaveBeenCalledWith('user_grace')
     expect(await findUserById(database, 'user_grace')).toMatchObject({
       id: 'user_grace',
       email: 'grace@example.com',

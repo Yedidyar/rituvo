@@ -11,12 +11,6 @@
   },
   "nx": {
     "targets": {
-      "test": {
-        "options": {
-          "command": "vitest run --passWithNoTests",
-          "cwd": "apps/api"
-        }
-      },
       "build": {
         "executor": "@nx/esbuild:esbuild",
         "outputs": [

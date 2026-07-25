@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/tanstack-react-start'
 import { z } from 'zod'
 
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
+import { apiUrl } from '#/lib/api-url'
 
 /**
  * React Query key for the signed-in user's row. Shared so any screen can read

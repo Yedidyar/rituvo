@@ -40,7 +40,7 @@ afterAll(() => connection.close())
 
 beforeEach(() => truncateUsers(database))
 
-describe('users repository against real Postgres', () => {
+describe('users repository', () => {
   it('inserts a new row and reads it back', async () => {
     const inserted = await upsertUser(database, {
       userId: 'user_ada',
