@@ -10,15 +10,40 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  actions: read
+  contents: read
+
+env:
+  CI: true
+  # Allow restoring Nx cache artifacts created on other CI runners.
+  NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
+
 jobs:
   checks:
-    name: Lint, Format & Test
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Lint
+            cache-group: lint
+            command: pnpm nx affected -t lint
+          - name: Format Check
+            cache-group: format
+            command: pnpm nx affected -t format:check
+          - name: Test
+            cache-group: test
+            command: pnpm nx affected -t test
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          filter: tree:0
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -29,14 +54,31 @@ jobs:
           node-version: 26
           cache: pnpm
 
+      - name: Restore Nx cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .nx/cache
+            .nx/workspace-data
+          key: nx-${{ runner.os }}-${{ matrix.cache-group }}-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ matrix.cache-group }}-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-
+            nx-${{ runner.os }}-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
+      - name: Set Nx SHAs
+        uses: nrwl/nx-set-shas@v5
 
-      - name: Format check
-        run: pnpm format:check
+      - name: Run
+        run: ${{ matrix.command }}
 
-      - name: Test
-        run: pnpm test
+      - name: Save Nx cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .nx/cache
+            .nx/workspace-data
+          key: nx-${{ runner.os }}-${{ matrix.cache-group }}-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-${{ github.sha }}
