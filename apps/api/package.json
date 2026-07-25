@@ -11,12 +11,6 @@
   },
   "nx": {
     "targets": {
-      "test": {
-        "options": {
-          "command": "vitest run --passWithNoTests",
-          "cwd": "apps/api"
-        }
-      },
       "build": {
         "executor": "@nx/esbuild:esbuild",
         "outputs": [
@@ -154,6 +148,7 @@
     "@testcontainers/postgresql": "^12.0.4",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
+    "nock": "^14.0.10",
     "svix": "1.96.1",
     "vitest": "^4.1.10"
   }

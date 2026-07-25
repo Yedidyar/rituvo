@@ -1,5 +1,6 @@
 import { ClerkProvider } from '@clerk/tanstack-react-start'
 import { heIL } from '@clerk/localizations'
+import { ui } from '@clerk/ui'
 
 import type { Locale } from '#/i18n/config'
 import { useLocale } from '#/i18n/locale-provider'
@@ -138,6 +139,8 @@ export default function AppClerkProvider({
       afterSignOutUrl="/"
       appearance={appearance}
       localization={localization}
+      telemetry={false}
+      ui={ui}
     >
       {children}
     </ClerkProvider>

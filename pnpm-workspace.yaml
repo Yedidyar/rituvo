@@ -4,6 +4,8 @@ packages:
 
 allowBuilds:
   "@clerk/shared": true
+  bufferutil: true
+  core-js: true
   # cpu-features, protobufjs and ssh2 come in transitively with Testcontainers
   # (dockerode → ssh2). Their native builds only matter for Docker-over-SSH,
   # which we don't use — the local socket path never loads them.
@@ -14,5 +16,6 @@ allowBuilds:
   protobufjs: false
   ssh2: false
   unrs-resolver: true
+  utf-8-validate: true
 
 autoInstallPeers: true

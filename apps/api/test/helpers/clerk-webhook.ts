@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+
 import { Webhook } from 'svix'
 
 export interface SvixHeaders {
@@ -5,8 +7,6 @@ export interface SvixHeaders {
   'svix-timestamp': string
   'svix-signature': string
 }
-
-let messageCounter = 0
 
 /**
  * Produces the Svix headers Clerk sends alongside a webhook payload, signed
@@ -23,7 +23,7 @@ export function signClerkWebhook(
   payload: string,
 ): SvixHeaders {
   const webhook = new Webhook(signingSecret)
-  const messageId = `msg_test_${(messageCounter += 1)}`
+  const messageId = `msg_test_${randomUUID()}`
   const timestamp = new Date()
   const signature = webhook.sign(messageId, timestamp, payload)
 

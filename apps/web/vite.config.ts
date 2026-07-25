@@ -25,7 +25,6 @@ export default defineConfig(({ mode }) => {
     cacheDir: '../../node_modules/.vite/apps/web',
     resolve: {
       tsconfigPaths: true,
-      conditions: ['@rituvo/source'],
     },
     build: {
       outDir: './dist',
@@ -42,8 +41,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       !isTest && devtools(),
-      !isTest &&
-        nitro({ config: { rollupConfig: { external: [/^@sentry\//] } } }),
+      !isTest && nitro({ rollupConfig: { external: [/^@sentry\//] } }),
       tailwindcss(),
       !isTest && tanstackStart(),
       viteReact(),

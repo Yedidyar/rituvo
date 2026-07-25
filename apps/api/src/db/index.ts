@@ -7,8 +7,8 @@ import * as schema from './schema'
 export type Database = NodePgDatabase<typeof schema>
 
 /**
- * A live database connection: the Drizzle instance to query through, and a
- * close function that drains the underlying pool on shutdown.
+ * A live database connection. Call close() when the connection outlives a single
+ * block (e.g. app lifetime or test teardown).
  */
 export interface DatabaseConnection {
   readonly database: Database
@@ -26,8 +26,10 @@ export function createDatabase(connectionString: string): DatabaseConnection {
   const pool = new Pool({ connectionString })
   const database = drizzle(pool, { schema })
 
+  const close = () => pool.end()
+
   return {
     database,
-    close: () => pool.end(),
+    close,
   }
 }

@@ -19,9 +19,6 @@ import { truncateUsers } from './helpers/database'
 import { signClerkWebhook } from './helpers/clerk-webhook'
 import { CLERK_WEBHOOK_TEST_SECRET, testConfig } from './helpers/test-config'
 
-// Replace only Clerk's request-auth surface so the app boots without real
-// keys or network. Signature verification lives in '@clerk/fastify/webhooks',
-// a separate module left untouched — so the webhook route verifies for real.
 vi.mock('@clerk/fastify', async () => {
   const fastifyPlugin = (await import('fastify-plugin')).default
   return {
@@ -92,7 +89,7 @@ afterAll(async () => {
 
 beforeEach(() => truncateUsers(database))
 
-describe('POST /webhooks/clerk against real Postgres', () => {
+describe('POST /webhooks/clerk', () => {
   it('persists the user on a signed user.created event', async () => {
     const response = await postWebhook(fastify, userCreatedEvent())
 
@@ -135,7 +132,6 @@ describe('POST /webhooks/clerk against real Postgres', () => {
     const payload = JSON.stringify(userCreatedEvent())
     const headers = signClerkWebhook(CLERK_WEBHOOK_TEST_SECRET, payload)
 
-    // Send a different body than the one that was signed.
     const tamperedPayload = JSON.stringify(
       userCreatedEvent({ id: 'user_injected' }),
     )

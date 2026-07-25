@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 
 import type { Database } from '../db'
 import { users } from '../db/schema'
@@ -43,7 +43,7 @@ export async function upsertUser(
     .values({ id: input.userId, ...input.profile })
     .onConflictDoUpdate({
       target: users.id,
-      set: { ...input.profile, updatedAt: new Date() },
+      set: { ...input.profile, updatedAt: sql`now()` },
     })
     .returning()
 
