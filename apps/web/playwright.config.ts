@@ -63,7 +63,7 @@ export default defineConfig({
           command: 'pnpm nx dev web',
           cwd: workspaceRoot,
           url: baseURL,
-          reuseExistingServer: !process.env.CI,
+          reuseExistingServer: true,
           timeout: 120_000,
         },
       ],

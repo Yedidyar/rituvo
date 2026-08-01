@@ -162,6 +162,20 @@ jobs:
           cat api.log
           exit 1
 
+      - name: Start web
+        run: |
+          pnpm nx dev web > web.log 2>&1 &
+          for i in $(seq 1 150); do
+            if curl -sf http://localhost:3000 > /dev/null; then
+              echo "Web is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Web failed to start:"
+          cat web.log
+          exit 1
+
       - name: Run Playwright tests
         run: pnpm nx e2e web
 
