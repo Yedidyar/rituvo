@@ -81,24 +81,6 @@ export function useTranslation() {
   return { translate, locale, direction, setLocale }
 }
 
-function detectBrowserLocale(): Locale {
-  if (typeof navigator === 'undefined') {
-    return defaultLocale
-  }
-
-  const preferred = navigator.languages?.[0] ?? navigator.language
-  if (!preferred) {
-    return defaultLocale
-  }
-
-  const normalized = preferred.toLowerCase()
-  if (normalized.startsWith('he')) {
-    return 'he'
-  }
-
-  return defaultLocale
-}
-
 function readStoredLocale(): Locale | null {
   if (typeof window === 'undefined') {
     return null
@@ -113,7 +95,7 @@ function readStoredLocale(): Locale | null {
 }
 
 function resolveInitialLocale(): Locale {
-  return readStoredLocale() ?? detectBrowserLocale()
+  return readStoredLocale() ?? defaultLocale
 }
 
 function applyDocumentLocale(locale: Locale) {

@@ -49,25 +49,26 @@
   --font-heading: 'Frank Ruhl Libre', Georgia, serif;
   --font-body: 'Assistant', ui-sans-serif, system-ui, sans-serif;
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+  /* shadcn tokens — mapped to Becoming (same palette as sign-in) */
+  --background: var(--color-cream);
+  --foreground: var(--color-ink);
+  --card: var(--color-paper);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-paper);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-leaf);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-sand);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-sand);
+  --muted-foreground: #4a5850;
+  --accent: var(--color-leaf-soft);
+  --accent-foreground: var(--color-ink);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.871 0.006 286.286);
+  --border: var(--color-line);
+  --input: var(--color-line-strong);
+  --ring: var(--color-leaf);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -187,76 +188,31 @@ body,
 
 body {
   margin: 0;
-  color: var(--sea-ink);
-  font-family: var(--font-sans);
-  background-color: var(--bg-base);
-  background:
-    radial-gradient(1100px 620px at -8% -10%, var(--hero-a), transparent 58%),
-    radial-gradient(1050px 620px at 112% -12%, var(--hero-b), transparent 62%),
-    radial-gradient(
-      720px 380px at 50% 115%,
-      rgba(79, 184, 178, 0.1),
-      transparent 68%
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--sand) 68%, white) 0%,
-      var(--foam) 44%,
-      var(--bg-base) 100%
-    );
+  color: var(--foreground);
+  font-family: var(--font-body);
+  background-color: var(--color-cream);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 html[dir='rtl'] body {
-  font-family: 'Heebo', 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.28;
-  background:
-    radial-gradient(
-      circle at 20% 15%,
-      rgba(255, 255, 255, 0.8),
-      transparent 34%
-    ),
-    radial-gradient(
-      circle at 78% 26%,
-      rgba(79, 184, 178, 0.2),
-      transparent 42%
-    ),
-    radial-gradient(circle at 42% 82%, rgba(47, 106, 74, 0.14), transparent 36%);
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.14;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(circle at 50% 30%, black, transparent 78%);
-}
-
-a {
-  color: var(--lagoon-deep);
-  text-decoration-color: rgba(50, 143, 151, 0.4);
+a:not([data-slot='button']) {
+  color: var(--color-leaf);
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--color-leaf) 40%,
+    transparent
+  );
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
 
-a:hover {
-  color: #246f76;
+a:not([data-slot='button']):hover {
+  color: var(--color-leaf-dark);
 }
 
 code {
