@@ -1,21 +1,22 @@
 import Fastify from 'fastify'
-import { app } from './app/app'
-import { env } from './env'
 
-// Instantiate Fastify with some config
+import { app } from './app/app'
+import { loadConfig } from './config'
+
+// The composition root: load configuration once and thread it through the app.
+const config = loadConfig()
+
 const server = Fastify({
   logger: true,
 })
 
-// Register your application as a normal plugin.
-server.register(app)
+server.register(app, { config })
 
-// Start listening.
-server.listen({ port: env.PORT, host: env.HOST }, (err) => {
+server.listen({ port: config.port, host: config.host }, (err) => {
   if (err) {
     server.log.error(err)
     process.exit(1)
   } else {
-    console.log(`[ ready ] http://${env.HOST}:${env.PORT}`)
+    console.log(`[ ready ] http://${config.host}:${config.port}`)
   }
 })
