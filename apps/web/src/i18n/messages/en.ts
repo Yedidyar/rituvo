@@ -143,6 +143,9 @@ export const en = {
     noPartner: 'No partner assigned',
     backToToday: 'Back to today',
     notFound: 'Habit not found',
+    errorTitle: 'Could not load habit',
+    errorDescription:
+      'Something went wrong while loading this habit. Try again.',
     daily: 'Every day',
     specificDays: 'Specific days',
   },

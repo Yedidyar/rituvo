@@ -13,6 +13,7 @@ import {
 import { useTranslation } from '#/i18n/locale-provider'
 import HeaderUser from '#/integrations/clerk/header-user'
 import { getOrpc } from '#/lib/orpc-client'
+import { todayIsoDate } from '#/features/habits/habit-create-form'
 import type { HabitSummary } from '@rituvo/api-contract'
 
 export const Route = createFileRoute('/')({
@@ -41,9 +42,6 @@ function Home() {
             <SignInButton>
               <Button>{translate('auth.signIn')}</Button>
             </SignInButton>
-            <Button variant="outline" render={<Link to="/habits/new" />}>
-              {translate('home.createHabit')}
-            </Button>
           </CardContent>
         </Card>
       </Show>
@@ -64,7 +62,9 @@ function TodayDashboard() {
   const { translate } = useTranslation()
   const isClient = typeof window !== 'undefined'
   const listActive = isClient
-    ? getOrpc().habit.listActive.queryOptions({ input: {} })
+    ? getOrpc().habit.listActive.queryOptions({
+        input: { referenceDate: todayIsoDate() },
+      })
     : undefined
 
   const habitsQuery = useQuery({
@@ -99,7 +99,7 @@ function TodayDashboard() {
 
   const habits = habitsQuery.data ?? []
   const dueToday = habits.filter((habit) => habit.isDueToday)
-  const activeHabits = habits
+  const activeHabits = habits.filter((habit) => !habit.isDueToday)
 
   return (
     <div className="space-y-8">

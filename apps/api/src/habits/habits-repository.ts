@@ -66,6 +66,7 @@ export async function listAccountabilityPartnersForUser(
       userId: users.id,
       firstName: users.firstName,
       lastName: users.lastName,
+      email: users.email,
       imageUrl: users.imageUrl,
     })
     .from(accountabilityPartnerships)

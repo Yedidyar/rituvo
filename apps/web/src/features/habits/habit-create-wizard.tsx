@@ -155,10 +155,17 @@ export function HabitCreateWizard({ onCreated }: HabitCreateWizardProps) {
 
   const skipStep = useCallback(() => {
     setErrors({})
+    if (step === 'target') {
+      setForm((current) => ({
+        ...current,
+        targetValue: '',
+        targetUnit: '',
+      }))
+    }
     setStepIndex((current) =>
       Math.min(current + 1, HABIT_CREATE_STEPS.length - 1),
     )
-  }, [])
+  }, [step])
 
   const submit = useCallback(() => {
     if (!validateCurrentStep()) {
@@ -489,7 +496,26 @@ export function HabitCreateWizard({ onCreated }: HabitCreateWizardProps) {
           ) : null}
 
           {step === 'review' ? (
-            <ReviewSummary form={form} partners={partnersQuery.data ?? []} />
+            <>
+              <ReviewSummary form={form} partners={partnersQuery.data ?? []} />
+              {errors.targetValue || errors.targetUnit ? (
+                <div
+                  className="rounded-lg border border-destructive/30 bg-destructive/5 p-3"
+                  role="alert"
+                >
+                  {errors.targetValue ? (
+                    <p className="text-sm text-destructive">
+                      {errors.targetValue}
+                    </p>
+                  ) : null}
+                  {errors.targetUnit ? (
+                    <p className="text-sm text-destructive">
+                      {errors.targetUnit}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+            </>
           ) : null}
 
           {createMutation.isError ? (

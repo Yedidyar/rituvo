@@ -129,6 +129,28 @@ describe('habit.create', () => {
       }),
     ).rejects.toBeInstanceOf(ORPCError)
   })
+
+  it('rejects a partner who is not in active partnerships', async () => {
+    await upsertUser(database, {
+      userId: 'user_owner',
+      profile: ownerProfile,
+    })
+    await upsertUser(database, {
+      userId: 'user_stranger',
+      profile: partnerProfile,
+    })
+
+    const client = createTestClient(database, 'user_owner')
+
+    await expect(
+      client.habit.create({
+        name: 'Walk after lunch',
+        frequency: 'daily',
+        startDate: '2026-08-01',
+        partnerUserId: 'user_stranger',
+      }),
+    ).rejects.toMatchObject({ code: 'BAD_REQUEST' })
+  })
 })
 
 describe('habit.listActive', () => {

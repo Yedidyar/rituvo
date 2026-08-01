@@ -20,6 +20,15 @@ export const Route = createFileRoute('/habits/$habitId')({
   component: HabitDetailPage,
 })
 
+function getOrpcErrorCode(error: unknown): string | undefined {
+  if (typeof error === 'object' && error !== null && 'code' in error) {
+    const code = (error as { code: unknown }).code
+    return typeof code === 'string' ? code : undefined
+  }
+
+  return undefined
+}
+
 function HabitDetailPage() {
   const { habitId } = Route.useParams()
   const { translate } = useTranslation()
@@ -33,6 +42,9 @@ function HabitDetailPage() {
     queryFn: habitGet?.queryFn ?? skipToken,
     enabled: isClient,
   })
+
+  const isNotFound =
+    habitQuery.isError && getOrpcErrorCode(habitQuery.error) === 'NOT_FOUND'
 
   return (
     <div className="page-wrap mx-auto min-h-dvh max-w-2xl p-4 pb-8 sm:p-8">
@@ -59,11 +71,27 @@ function HabitDetailPage() {
           <p className="text-muted-foreground">{translate('common.loading')}</p>
         ) : null}
 
-        {habitQuery.isError ? (
+        {isNotFound ? (
           <Card>
             <CardHeader>
               <CardTitle>{translate('habitDetail.notFound')}</CardTitle>
             </CardHeader>
+          </Card>
+        ) : null}
+
+        {habitQuery.isError && !isNotFound ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>{translate('habitDetail.errorTitle')}</CardTitle>
+              <CardDescription>
+                {translate('habitDetail.errorDescription')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" onClick={() => habitQuery.refetch()}>
+                {translate('common.retry')}
+              </Button>
+            </CardContent>
           </Card>
         ) : null}
 

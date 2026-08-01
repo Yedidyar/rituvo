@@ -98,7 +98,7 @@ export const habitListPartners = authed.habit.listPartners.handler(
       displayName: partnerDisplayName(
         partner.firstName,
         partner.lastName,
-        null,
+        partner.email,
       ),
       imageUrl: partner.imageUrl,
     }))
