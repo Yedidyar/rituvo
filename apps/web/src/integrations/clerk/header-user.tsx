@@ -4,6 +4,7 @@ import {
   SignUpButton,
   UserButton,
 } from '@clerk/tanstack-react-start'
+import { Settings } from 'lucide-react'
 
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/i18n/locale-provider'
@@ -22,7 +23,15 @@ export default function HeaderUser() {
         </SignUpButton>
       </Show>
       <Show when="signed-in">
-        <UserButton />
+        <UserButton>
+          <UserButton.MenuItems>
+            <UserButton.Link
+              label={translate('settings.title')}
+              labelIcon={<Settings className="size-4" />}
+              href="/settings"
+            />
+          </UserButton.MenuItems>
+        </UserButton>
       </Show>
     </div>
   )
