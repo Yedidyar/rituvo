@@ -24,7 +24,8 @@ if (
   process.env.CLERK_PUBLISHABLE_KEY = process.env.VITE_CLERK_PUBLISHABLE_KEY
 }
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3000'
+const webPort = process.env.WEB_PORT ?? '3000'
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${webPort}`
 
 export default defineConfig({
   testDir: './e2e',

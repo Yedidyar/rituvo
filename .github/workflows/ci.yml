@@ -109,7 +109,7 @@ jobs:
       DATABASE_URL: postgresql://rituvo:rituvo@localhost:5432/rituvo
       HOST: localhost
       PORT: 3001
-      WEB_ORIGIN: http://localhost:3000
+      WEB_PORT: 3000
       NODE_ENV: development
       CLERK_TELEMETRY_DISABLED: 1
       VITE_CLERK_TELEMETRY_DISABLED: 1
@@ -141,6 +141,11 @@ jobs:
           test -n "$CLERK_SECRET_KEY"
           test -n "$E2E_CLERK_USER_EMAIL"
 
+      - name: Set web URLs from WEB_PORT
+        run: |
+          echo "WEB_ORIGIN=http://localhost:${WEB_PORT}" >> "$GITHUB_ENV"
+          echo "PLAYWRIGHT_BASE_URL=http://localhost:${WEB_PORT}" >> "$GITHUB_ENV"
+
       - name: Install Playwright browsers
         run: pnpm --filter @rituvo/web exec playwright install --with-deps chromium
 
@@ -166,7 +171,7 @@ jobs:
         run: |
           pnpm nx dev web > web.log 2>&1 &
           for i in $(seq 1 150); do
-            if curl -sf http://localhost:3000 > /dev/null; then
+            if curl -sf "http://localhost:${WEB_PORT}" > /dev/null; then
               echo "Web is ready"
               exit 0
             fi
