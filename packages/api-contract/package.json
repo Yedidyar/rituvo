@@ -1,0 +1,18 @@
+{
+  "name": "@rituvo/api-contract",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@rituvo/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@orpc/contract": "^1.8.9",
+    "zod": "^4.4.3"
+  }
+}
