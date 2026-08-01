@@ -5,6 +5,8 @@ import { createTanstackQueryUtils } from '@orpc/tanstack-query'
 import type { contract } from '@rituvo/api-contract'
 import { createClientOnlyFn } from '@tanstack/react-start'
 
+import { env } from '#/env.client'
+
 export type ApiClient = ContractRouterClient<typeof contract>
 
 type TokenGetter = () => Promise<string | null>
@@ -20,7 +22,7 @@ export function setApiTokenGetter(getter: TokenGetter) {
 
 function createLink() {
   return new RPCLink({
-    url: `${import.meta.env.VITE_API_URL}/rpc`,
+    url: `${env.VITE_API_URL}/rpc`,
     headers: async () => {
       const token = await tokenGetterRef.current()
       return token ? { Authorization: `Bearer ${token}` } : {}

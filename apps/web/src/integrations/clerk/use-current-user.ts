@@ -1,12 +1,7 @@
-import { createGeneralUtils } from '@orpc/tanstack-query'
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/tanstack-react-start'
 
 import { getOrpc } from '#/lib/orpc-client'
-
-const userMeKey = createGeneralUtils<undefined>(['user', 'me']).key({
-  type: 'query',
-})
 
 /**
  * Fetches the signed-in user's row via the oRPC user.me procedure.
@@ -19,10 +14,11 @@ const userMeKey = createGeneralUtils<undefined>(['user', 'me']).key({
 export function useCurrentUser() {
   const { isSignedIn } = useAuth()
   const isClient = typeof window !== 'undefined'
+  const userMe = isClient ? getOrpc().user.me.queryOptions() : undefined
 
   return useQuery({
-    queryKey: userMeKey,
-    queryFn: () => getOrpc().user.me.call(),
+    queryKey: userMe?.queryKey ?? ['user', 'me'],
+    queryFn: userMe?.queryFn ?? skipToken,
     enabled: isClient && Boolean(isSignedIn),
     staleTime: Infinity,
   })
