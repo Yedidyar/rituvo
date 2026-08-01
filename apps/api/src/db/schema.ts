@@ -5,10 +5,14 @@ export const users = pgTable('users', {
   // — Clerk does not contractually fix the length, so this guards against
   // garbage rather than assuming a tight size.
   id: varchar({ length: 255 }).primaryKey(),
-  email: text(),
+  email: text().unique(),
   firstName: varchar('first_name', { length: 255 }),
   lastName: varchar('last_name', { length: 255 }),
   imageUrl: text('image_url'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 })

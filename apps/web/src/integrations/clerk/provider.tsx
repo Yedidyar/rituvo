@@ -1,9 +1,10 @@
-import { ClerkProvider } from '@clerk/tanstack-react-start'
+import { ClerkProvider, useAuth } from '@clerk/tanstack-react-start'
 import { heIL } from '@clerk/localizations'
 import { ui } from '@clerk/ui'
 
 import type { Locale } from '#/i18n/config'
 import { useLocale } from '#/i18n/locale-provider'
+import { setApiTokenGetter } from '#/lib/orpc-client'
 
 // Shared appearance so sign-in, sign-up, and the user button match the
 // Becoming design system. Clerk injects its own (unlayered) styles that beat
@@ -88,6 +89,13 @@ const clerkBaseLocalization: Partial<Record<Locale, typeof heIL>> = {
   he: heIL,
 }
 
+function ApiAuthSync({ children }: { children: React.ReactNode }) {
+  const { getToken } = useAuth()
+  setApiTokenGetter(getToken)
+
+  return children
+}
+
 export default function AppClerkProvider({
   children,
 }: {
@@ -142,7 +150,7 @@ export default function AppClerkProvider({
       telemetry={false}
       ui={ui}
     >
-      {children}
+      <ApiAuthSync>{children}</ApiAuthSync>
     </ClerkProvider>
   )
 }

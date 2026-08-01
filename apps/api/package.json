@@ -136,6 +136,8 @@
     "@fastify/autoload": "~6.0.3",
     "@fastify/cors": "^11.3.0",
     "@fastify/sensible": "~6.0.2",
+    "@orpc/server": "^1.8.9",
+    "@rituvo/api-contract": "workspace:*",
     "@t3-oss/env-core": "^0.13.11",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.2",
