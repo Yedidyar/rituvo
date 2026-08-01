@@ -56,7 +56,7 @@ export default defineConfig({
           command: 'pnpm nx serve api',
           cwd: workspaceRoot,
           url: 'http://localhost:3001/health',
-          reuseExistingServer: !process.env.CI,
+          reuseExistingServer: true,
           timeout: 120_000,
         },
         {

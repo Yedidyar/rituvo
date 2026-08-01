@@ -147,6 +147,21 @@ jobs:
       - name: Apply database schema
         run: pnpm --filter @rituvo/api db:push
 
+      - name: Build and start API
+        run: |
+          pnpm nx build api
+          pnpm nx serve api > api.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:3001/health > /dev/null; then
+              echo "API is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API failed to start:"
+          cat api.log
+          exit 1
+
       - name: Run Playwright tests
         run: pnpm nx e2e web
 
